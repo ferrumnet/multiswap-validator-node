@@ -81,14 +81,6 @@ The file `standardStatuses.ts` within the `middlewares/response` directory of th
         -   `data`: The payload to be included in the response.
     -   Returns: An object with a status code of `200` and the provided data.
     -   Usage: Used to send a successful response to the client with the specified data.
-    -   Code:
-
-        typescriptCopy code
-
-        `return {
-          code: 200,
-          data: data
-        }`
 
 2.  status400(data: any)
 
@@ -97,14 +89,6 @@ The file `standardStatuses.ts` within the `middlewares/response` directory of th
         -   `data`: The error message or data to be included in the response.
     -   Returns: An object with a status code of `400` and the error message.
     -   Usage: Used to indicate that the client made an incorrect request.
-    -   Code:
-
-        typescriptCopy code
-
-        `return {
-          code: 400,
-          message: data
-        }`
 
 3.  status401(data: any)
 
@@ -113,14 +97,6 @@ The file `standardStatuses.ts` within the `middlewares/response` directory of th
         -   `data`: The error message or data indicating the authentication failure.
     -   Returns: An object with a status code of `401` and the error message.
     -   Usage: Used to indicate that the request requires user authentication.
-    -   Code:
-
-        typescriptCopy code
-
-        `return {
-          code: 401,
-          message: data
-        }`
 
 These functions provide a standardized way to handle HTTP responses across the application, ensuring consistency in how responses are structured and sent to clients.
 

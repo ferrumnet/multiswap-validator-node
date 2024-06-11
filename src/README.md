@@ -15,29 +15,11 @@ Here's the detailed documentation for each function in the `app.ts` file of the 
 
 1.  JSON Request Body Parsing: The application is configured to parse JSON bodies of incoming requests, which is standard for API servers to properly receive and understand JSON data.
 
-    javascriptCopy code
-
-    `app.use(express.json());`
-
 2.  URL Encoded Request Body Parsing: It also parses URL-encoded bodies, allowing the server to accept data from forms sent as HTTP POST requests.
-
-    javascriptCopy code
-
-    `app.use(express.urlencoded({ extended: true }));`
 
 3.  Using `responseAppender` Middleware: The `responseAppender` function is applied to all routes, ensuring that the response appending functionality is executed for each request.
 
-    javascriptCopy code
-
-    `app.use(responseAppender);`
-
 4.  Handling Unknown API Requests: Any requests that do not match known routes are handled by this middleware, which creates and passes a 404 error to the error-handling middleware.
-
-    javascriptCopy code
-
-    `app.use((req, res, next) => {
-      next(Error("Not found"));
-    });`
 
 ### Export:
 
@@ -48,52 +30,6 @@ These functions and middleware setup are crucial for setting up the server's req
 # index.ts
 
 Here's the detailed documentation for each function and significant line in the file located at [`src/index.ts`](https://github.com/ferrumnet/multiswap-validator-node/blob/main/src/index.ts) from the `ferrumnet/multiswap-validator-node` GitHub repository:
-
-typescriptCopy code
-
-`// Importing required modules and components
-
-import dotenv from "dotenv";
-
-import app from "./app";
-
-import awsSecretsManager from "./utils/awsSecretsManager";
-
-import transactionsJob from "./crons/transactionsJob";
-
-// Load environment variables from .env file into process.env
-
-dotenv.config();
-
-// Main asynchronous function to initialize necessary components and start jobs
-
-(async () => {
-
-  // Initialize AWS secrets manager to securely handle secrets
-
-  await awsSecretsManager();
-
-  // Start the transactions job to handle transaction-related tasks
-
-  transactionsJob();
-
-})().catch((e) => {
-
-  // Log any errors that occur during the initialization or during runtime
-
-  console.log(e);
-
-});
-
-// Starts the server listening on the port specified in the environment variables
-
-const server = app.listen(process.env.PORT, () => {
-
-  // Log that the server is listening and on which port
-
-  console.info(`Listening to port ${process.env.PORT}`);
-
-});`
 
 ### File Overview:
 

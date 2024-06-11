@@ -124,12 +124,6 @@ Here's the detailed documentation for each function found in the `utils.ts` file
 
 ### 1\. erc20 function
 
-typescriptCopy code
-
-`const erc20 = (web3: any, token: string) => {
-  return new web3.eth.Contract(erc20Abi as any, token);
-};`
-
 Parameters:
 
 -   `web3`: A web3 instance used to interact with Ethereum blockchain.
@@ -140,18 +134,6 @@ Returns: An instance of the web3.eth.Contract for the specified token using the 
 Description: This function creates and returns a web3.eth.Contract instance for a given ERC20 token address, facilitating interactions with the smart contract.
 
 ### 2\. decimals function
-
-typescriptCopy code
-
-`export const decimals = async (web3: any, token: string) => {
-  if (web3 && token) {
-    let con = erc20(web3, token);
-    if (con) {
-      return await con.methods.decimals().call();
-    }
-  }
-  return null;
-};`
 
 Parameters:
 
@@ -164,49 +146,11 @@ Description: This asynchronous function retrieves the number of decimals for a g
 
 ### 3\. removeExponential function
 
-typescriptCopy code
-
-`export const removeExponential = function (n: any) {
-  var sign = +n < 0 ? "-" : "",
-    toStr = n.toString();
-  if (!/e/i.test(toStr)) {
-    return n;
-  }
-  var [lead, decimal, pow] = n
-    .toString()
-    .replace(/^-/, "")
-    .replace(/^([0-9]+)(e.*)/, "$1.$2")
-    .split(/e|\./);
-  return +pow < 0
-    ? sign +
-        "0." +
-        "0".repeat(Math.max(Math.abs(pow) - 1 || 0, 0)) +
-        lead +
-        decimal
-    : sign +
-        lead +
-        (+pow >= decimal.length
-          ? decimal + "0".repeat(Math.max(+pow - decimal.length || 0, 0))
-          : decimal.slice(0, +pow) + "." + decimal.slice(+pow));
-};`
-
-Parameters:
-
--   `n`: A number in exponential form.
-
 Returns: A string representing the number in non-exponential form.
 
 Description: Converts a number from exponential notation to a normal string representation without exponential notation, especially useful for displaying numbers in user interfaces.
 
 ### 4\. numberIntoDecimals function
-
-typescriptCopy code
-
-`export const numberIntoDecimals = function (amount: any, decimal: any) {
-  let formattedValue = ethers.utils.parseUnits(amount.toString(), decimal);
-  formattedValue = removeExponential(formattedValue.toString());
-  return formattedValue;
-};`
 
 Parameters:
 
@@ -219,15 +163,6 @@ Description: Converts a numeric amount into a string representation with a speci
 
 ### 5\. decimalsIntoNumber function
 
-typescriptCopy code
-
-`export const decimalsIntoNumber = function (amount: any, decimal: any) {
-  const bigNumberValue = ethers.BigNumber.from(amount.toString());
-  let formattedValue = ethers.utils.formatUnits(bigNumberValue, decimal);
-  formattedValue = removeExponential(formattedValue.toString());
-  return formattedValue;
-};`
-
 Parameters:
 
 -   `amount`: The amount in the smallest unit.
@@ -238,15 +173,6 @@ Returns: A string representing the amount adjusted for the specified decimal pla
 Description: Converts a value from its smallest unit representation (like wei in Ethereum) to a human-readable format considering the decimal places.
 
 ### 6\. withSlippage function
-
-typescriptCopy code
-
-`export const withSlippage = function (value: any, slippage: number) {
-  let slippageProportion = 100 - slippage;
-  let valueWithSlippage = (value * slippageProportion) / 100;
-  valueWithSlippage = removeExponential(valueWithSlippage.toString());
-  return valueWithSlippage;
-};`
 
 Parameters:
 
