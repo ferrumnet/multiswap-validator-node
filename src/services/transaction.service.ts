@@ -31,22 +31,17 @@ export async function fetchChainDataFromNetwork(tx: any) {
       sourceChainId: sourceNetwork.chainId,
       destinationChaibId: destinationNetwork.chainId,
       slippage: tx.slippage,
+      isCCTP: tx?.isCCTP ? tx?.isCCTP : false,
+      minDestinationAmountIn: tx?.minDestinationAmountIn,
+      dbSettledAmount: tx?.settledAmount,
     };
 
     let job: any = { data: data, transaction: tx };
-    if (job.data.isSourceNonEVM) {
-      // job.returnvalue = await cosmWasmService.getTransactionReceipt(
-      //   job.data.txId,
-      //   job.data.sourceRpcURL
-      // );
-    } else {
-      job.returnvalue = await web3Service.getTransactionReceipt(
-        job.data.txId,
-        job.data.sourceChainId,
-        getThreshold(job.data.threshold)
-      );
-    }
-
+    job.returnvalue = await web3Service.getTransactionReceipt(
+      job.data.txId,
+      job.data.sourceChainId,
+      getThreshold(job.data.threshold)
+    );
     if (job?.returnvalue?.status == true) {
       await verifyAndCreateSignature(job);
     } else {
@@ -61,43 +56,29 @@ async function verifyAndCreateSignature(job: any) {
     let decodedData;
     let tx: any = {};
     let signedData;
-    if (job.data.isSourceNonEVM != null && job.data.isSourceNonEVM) {
-      // decodedData = cosmWasmService.getLogsFromTransactionReceipt(job);
-      // tx.from = decodedData.from;
-      // tx.hash = job.returnvalue.transactionHash;
-    } else {
-      decodedData = web3Service.getLogsFromTransactionReceipt(job);
-      tx = await web3Service.getTransactionByHash(
-        job.data.txId,
-        job.data.sourceChainId
-      );
-    }
-
-    if (job.data.isDestinationNonEVM != null && job.data.isDestinationNonEVM) {
-      // let sd = await cosmWasmService.signedTransaction(job, decodedData, tx);
-      // if (cosmWasmService.validateSignature(job, sd.signatures)) {
-      //   signedData = sd;
-      // }
-    } else {
-      let validateHashes = await web3Service.signedTransaction(
+    decodedData = web3Service.getLogsFromTransactionReceipt(job);
+    tx = await web3Service.getTransactionByHash(
+      job.data.txId,
+      job.data.sourceChainId
+    );
+    let validateHashes = await web3Service.signedTransaction(
+      job,
+      decodedData,
+      tx,
+      true
+    );
+    if (signatureService.validateSignature(job, validateHashes.signatures)) {
+      signedData = await web3Service.signedTransaction(
         job,
         decodedData,
         tx,
-        true
+        false
       );
-      if (signatureService.validateSignature(job, validateHashes.signatures)) {
-        signedData = await web3Service.signedTransaction(
-          job,
-          decodedData,
-          tx,
-          false
-        );
-      }
     }
-
     await updateTransaction(job, signedData, tx);
   } catch (error) {
     console.error("error occured", error);
+    await updateTransaction(job, null, null);
   }
 }
 

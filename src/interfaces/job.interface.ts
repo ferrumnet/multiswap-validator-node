@@ -19,6 +19,9 @@ export interface JobRequestBody {
   sourceChainId: string;
   destinationChaibId: string;
   slippage: number;
+  isCCTP: boolean;
+  minDestinationAmountIn: string;
+  dbSettledAmount: string;
 }
 
 export interface UpdateJobRequestBody {
